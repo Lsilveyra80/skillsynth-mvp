@@ -1,686 +1,156 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>SkillSynth – Compositor de habilidades</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Tipografía -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #050816;
-      --bg-alt: #0b1020;
-      --card-bg: #0f172a;
-      --primary: #38bdf8;
-      --primary-soft: rgba(56,189,248,0.12);
-      --accent: #a855f7;
-      --accent-soft: rgba(168,85,247,0.18);
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --border: #1f2937;
-      --badge-bg: #020617;
-      --shadow-soft: 0 24px 60px rgba(15,23,42,0.85);
-      --radius-xl: 18px;
-    }
+✅ README.md — SkillSynth (MVP)
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+Generador inteligente de habilidades + mapa de aprendizaje personalizado
 
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #0f172a 0, #020617 48%, #000 100%);
-      color: var(--text);
-      padding: 32px 16px 48px;
-      line-height: 1.7;
-    }
+🎼 SkillSynth – Compositor de habilidades
 
-    .page {
-      max-width: 980px;
-      margin: 0 auto;
-    }
+SkillSynth es una herramienta inteligente que toma las habilidades actuales del usuario, su objetivo profesional y su nivel actual, y genera un plan de aprendizaje personalizado, organizado como si fuera una composición musical:
 
-    .hero {
-      text-align: center;
-      padding: 32px 16px 40px;
-      border-radius: 24px;
-      background: radial-gradient(circle at top left, rgba(56,189,248,0.18), transparent 55%),
-                  radial-gradient(circle at top right, rgba(168,85,247,0.20), transparent 55%),
-                  linear-gradient(145deg, #020617 0%, #020617 30%, #020617 100%);
-      border: 1px solid rgba(148,163,184,0.18);
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-    }
+Instrumentos → habilidades actuales
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle at 10% 10%, rgba(248,250,252,0.08) 0, transparent 55%);
-      opacity: .4;
-      pointer-events: none;
-    }
+Notas → micro-skills
 
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-    }
+Secciones → roadmap
 
-    .logo-circle {
-      width: 78px;
-      height: 78px;
-      margin: 0 auto 12px;
-      border-radius: 999px;
-      background: conic-gradient(from 210deg, #38bdf8, #a855f7, #22c55e, #38bdf8);
-      padding: 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+Partitura final → plan ejecutable
 
-    .logo-circle-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 0, #1e293b 0, #020617 55%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 26px;
-      color: var(--primary);
-      text-shadow: 0 0 14px rgba(56,189,248,0.9);
-    }
+Este es el MVP del proyecto: una versión simple, rápida y funcional que permite generar rutas de aprendizaje usando IA (OpenAI).
 
-    .title {
-      font-size: 34px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 8px;
-      background: linear-gradient(to right, #e5e7eb, #a5b4fc, #67e8f9);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+🚀 Características del MVP
 
-    .subtitle {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 640px;
-      margin: 0 auto;
-    }
+Ingreso de habilidad actual
 
-    .badge-row {
-      margin-top: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
+Ingreso de objetivo o skill final
 
-    .badge {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.35);
-      background: rgba(15,23,42,0.8);
-      color: var(--muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+Selección de nivel (Principiante / Intermedio / Avanzado)
 
-    .badge span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 10px rgba(34,197,94,0.8);
-    }
+Envío a la API de OpenAI
 
-    h2 {
-      font-size: 22px;
-      margin: 32px 0 10px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-    }
+Generación automática de:
 
-    h3 {
-      font-size: 18px;
-      margin-top: 20px;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
+Explicación del “salto” entre habilidades
 
-    p {
-      margin-bottom: 10px;
-      color: var(--text);
-      font-size: 15px;
-    }
+Micro-skills necesarias
 
-    .muted {
-      color: var(--muted);
-      font-size: 14px;
-    }
+Mapa de ruta (roadmap) por bloques
 
-    .card {
-      background: linear-gradient(145deg, #020617 0%, #020617 40%, #020617 100%);
-      border-radius: var(--radius-xl);
-      padding: 20px 20px 18px;
-      border: 1px solid var(--border);
-      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
-      margin-top: 18px;
-    }
+Acciones recomendadas
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
+Ejercicios
 
-    .card-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 30% 0, var(--primary-soft), transparent 60%);
-      border: 1px solid rgba(56,189,248,0.4);
-      font-size: 17px;
-    }
+Recursos sugeridos (opcional)
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
+🧩 Tecnologías utilizadas
 
-    ul {
-      padding-left: 20px;
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
+Next.js 14 / React
 
-    li {
-      margin-bottom: 6px;
-    }
+TailwindCSS
 
-    code {
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 13px;
-      background: rgba(15,23,42,0.9);
-      padding: 2px 5px;
-      border-radius: 6px;
-      border: 1px solid rgba(30,64,175,0.7);
-      color: #bae6fd;
-    }
+OpenAI API (gpt-4.1 o gpt-4.1-mini)
 
-    pre {
-      background: #020617;
-      padding: 14px 14px;
-      border-radius: 14px;
-      overflow-x: auto;
-      border: 1px solid #1f2937;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
+TypeScript
 
-    pre code {
-      border: none;
-      padding: 0;
-      background: transparent;
-    }
+Vercel (opcional para deploy)
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px 0 12px;
-      font-size: 14px;
-    }
-
-    table thead {
-      background: rgba(15,23,42,0.85);
-    }
-
-    th, td {
-      border: 1px solid #1f2937;
-      padding: 8px 10px;
-      text-align: left;
-    }
-
-    th {
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    td {
-      color: #d1d5db;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid rgba(148,163,184,0.4);
-      font-size: 12px;
-      margin: 3px 4px 0 0;
-    }
-
-    .pill span.icon {
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    @media (min-width: 720px) {
-      .grid-2 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .footer {
-      margin-top: 32px;
-      padding-top: 16px;
-      border-top: 1px solid #111827;
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .tagline {
-      font-size: 13px;
-      color: #9ca3af;
-    }
-
-    .accent {
-      color: var(--accent);
-    }
-
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .section-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .chips-row {
-      margin-top: 6px;
-    }
-  </style>
-</head>
-<body>
-  <main class="page">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="logo-circle">
-          <div class="logo-circle-inner">Ss</div>
-        </div>
-        <h1 class="title">SkillSynth</h1>
-        <p class="subtitle">
-          Compositor de habilidades impulsado por IA. Convierte tu punto de partida en un
-          roadmap de aprendizaje claro, accionable y alineado con tu próximo gran salto profesional.
-        </p>
-        <div class="badge-row">
-          <div class="badge"><span class="dot"></span>MVP Activo</div>
-          <div class="badge">Next.js 14</div>
-          <div class="badge">TailwindCSS</div>
-          <div class="badge">TypeScript</div>
-          <div class="badge">OpenAI API</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- DESCRIPCIÓN GENERAL -->
-    <section>
-      <h2>🎯 Descripción general</h2>
-      <p>
-        <strong>SkillSynth</strong> es una aplicación web que utiliza inteligencia artificial para transformar las
-        habilidades actuales del usuario en un <strong>plan de aprendizaje personalizado</strong>, diseñado como si fuera
-        una <em>composición musical</em>.
-      </p>
-      <p>
-        El usuario ingresa su <strong>habilidad actual</strong>, su <strong>objetivo</strong> y su
-        <strong>nivel</strong> (Principiante / Intermedio / Avanzado), y SkillSynth genera:
-      </p>
-      <ul>
-        <li>Micro-skills necesarias para llegar del punto A al punto B.</li>
-        <li>Roadmap de aprendizaje organizado por etapas.</li>
-        <li>Explicación clara de la brecha entre habilidades.</li>
-        <li>Acciones y ejercicios recomendados.</li>
-        <li>Posible integración futura de recursos y links sugeridos.</li>
-      </ul>
-    </section>
-
-    <!-- IDEA DETRÁS -->
-    <section class="card">
-      <div class="card-header">
-        <div class="card-icon">🎼</div>
-        <div>
-          <div class="card-title">Idea detrás de SkillSynth</div>
-          <div class="muted">Componer habilidades como si fueran música</div>
-        </div>
-      </div>
-      <p>
-        La mayoría de los cursos online enseñan contenidos aislados, pero no cómo
-        <strong>construir una profesión completa</strong>. SkillSynth propone un enfoque distinto:
-      </p>
-      <ul>
-        <li><strong>Instrumentos</strong> → habilidades actuales.</li>
-        <li><strong>Notas</strong> → micro-skills.</li>
-        <li><strong>Compases</strong> → etapas del roadmap.</li>
-        <li><strong>Partitura final</strong> → plan completo, accionable y medible.</li>
-      </ul>
-    </section>
-
-    <!-- FEATURES -->
-    <section>
-      <h2>🚀 Características del MVP</h2>
-      <div class="grid grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">🧩</div>
-            <div class="card-title">Funcionalidad principal</div>
-          </div>
-          <ul>
-            <li>Formulario con: habilidad actual, objetivo y nivel.</li>
-            <li>Endpoint propio: <code>/api/generate</code>.</li>
-            <li>Llamada a la API de OpenAI para generar el roadmap.</li>
-            <li>Organización del resultado en secciones claras.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">🎛️</div>
-            <div class="card-title">Experiencia de usuario</div>
-          </div>
-          <ul>
-            <li>Interfaz limpia y minimalista con TailwindCSS.</li>
-            <li>Respuestas estructuradas: explicación, roadmap, acciones, ejercicios.</li>
-            <li>Arquitectura preparada para escalar nuevas features.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- TECNOLOGÍAS -->
-    <section>
-      <h2>🧠 Tecnologías utilizadas</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Tecnología</th>
-            <th>Uso dentro del proyecto</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Next.js 14 (App Router)</td>
-            <td>Frontend + API routes en un mismo stack.</td>
-          </tr>
-          <tr>
-            <td>React</td>
-            <td>Componentes reutilizables para UI.</td>
-          </tr>
-          <tr>
-            <td>TypeScript</td>
-            <td>Tipado estático para mayor robustez.</td>
-          </tr>
-          <tr>
-            <td>TailwindCSS</td>
-            <td>Estilos rápidos, consistentes y responsivos.</td>
-          </tr>
-          <tr>
-            <td>OpenAI API</td>
-            <td>Generación inteligente de roadmaps y texto.</td>
-          </tr>
-          <tr>
-            <td>Vercel (opcional)</td>
-            <td>Deploy rápido y auto-escalable.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="chips-row">
-        <span class="pill"><span class="icon">⚡</span>Stack moderno</span>
-        <span class="pill"><span class="icon">🧪</span>Listo para experimentar</span>
-        <span class="pill"><span class="icon">🌐</span>Preparado para producción</span>
-      </div>
-    </section>
-
-    <!-- ESTRUCTURA -->
-    <section>
-      <h2>📁 Estructura del proyecto</h2>
-      <pre><code>/skillsynth
+📁 Estructura del proyecto
+/skillsynth
  ├── app/
  │   ├── api/
- │   │   └── generate/route.ts     # Punto central del backend
+ │   │   └── generate/route.ts
  │   ├── components/
  │   │   ├── InputCard.tsx
  │   │   └── ResultCard.tsx
- │   └── page.tsx                  # Página principal
+ │   └── page.tsx
  ├── styles/
  │   └── globals.css
  ├── public/
- │   └── logo-skillsynth.png       # Logo del proyecto (opcional)
  ├── package.json
  ├── tailwind.config.js
  ├── postcss.config.js
- ├── tsconfig.json
- └── README.md / README.html</code></pre>
-    </section>
+ └── tsconfig.json
 
-    <!-- SCREENSHOTS -->
-    <section>
-      <h2>📸 Screenshots (mockups opcionales)</h2>
-      <p class="muted">
-        Sugerencia: agregá capturas dentro de <code>/public</code> y referencialas así
-        cuando lo uses en Markdown. En HTML puro, GitHub mostrará el código, pero podés
-        usar estas rutas si lo desplegás como página estática.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Pantalla</th>
-            <th>Descripción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>./public/home-preview.png</code></td>
-            <td>Vista general de la página de inicio.</td>
-          </tr>
-          <tr>
-            <td><code>./public/result-preview.png</code></td>
-            <td>Ejemplo de roadmap generado por la IA.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+🛠️ Instalación y uso
+1. Clonar el proyecto
+git clone https://github.com/tuUsuario/SkillSynth
+cd SkillSynth
 
-    <!-- INSTALACIÓN -->
-    <section>
-      <h2>🛠️ Instalación y uso</h2>
+2. Instalar dependencias
+npm install
 
-      <h3>1. Clonar el repositorio</h3>
-      <pre><code>git clone https://github.com/TU_USUARIO/skillsynth
-cd skillsynth</code></pre>
+3. Crear .env.local
 
-      <h3>2. Instalar dependencias</h3>
-      <pre><code>npm install</code></pre>
+En la raíz del proyecto, crear un archivo:
 
-      <h3>3. Configurar variables de entorno</h3>
-      <p>Crear el archivo <code>.env.local</code> en la raíz del proyecto:</p>
-      <pre><code>OPENAI_API_KEY=tu_api_key</code></pre>
-      <p class="muted">⚠️ Importante: no subir este archivo al repositorio.</p>
+OPENAI_API_KEY=tu_api_key
 
-      <h3>4. Ejecutar entorno de desarrollo</h3>
-      <pre><code>npm run dev</code></pre>
 
-      <h3>5. Abrir en el navegador</h3>
-      <pre><code>http://localhost:3000</code></pre>
-    </section>
+⚠️ No subir este archivo al repo.
 
-    <!-- ENDPOINT -->
-    <section>
-      <h2>🔌 Endpoint principal del MVP</h2>
-      <p>SkillSynth expone un único endpoint principal para generación de roadmaps:</p>
-      <p><code>POST /api/generate</code></p>
+4. Ejecutar el proyecto
+npm run dev
 
-      <h3>Ejemplo de solicitud</h3>
-      <pre><code>{
+5. Abrir en el navegador
+http://localhost:3000
+
+🧠 Cómo funciona internamente
+
+El usuario completa los campos:
+
+Habilidad actual
+
+Objetivo
+
+Nivel
+
+El front envía estos datos al endpoint:
+
+/api/generate
+
+
+El endpoint llama a la API de OpenAI.
+
+OpenAI devuelve un roadmap completo optimizado según el nivel.
+
+El frontend lo muestra en tarjetas (cards).
+
+📦 Endpoint principal
+POST /api/generate
+
+Ejemplo de body:
+
+{
   "fromSkill": "Excel básico",
-  "toSkill": "Analista de Datos",
+  "toSkill": "Analista de datos",
   "level": "Principiante"
-}</code></pre>
+}
 
-      <h3>Ejemplo de respuesta (esquema simplificado)</h3>
-      <pre><code>{
-  "explanation": "...",
-  "roadmap": "...",
-  "actions": "...",
-  "exercises": "..."
-}</code></pre>
-    </section>
 
-    <!-- EJEMPLO DE USO -->
-    <section>
-      <h2>💡 Ejemplo de entrada y salida</h2>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">🧪</div>
-          <div>
-            <div class="card-title">Caso: salto a Ciencia de Datos</div>
-            <div class="muted">Del uso de Excel a un perfil de alto valor</div>
-          </div>
-        </div>
-        <p><strong>Entrada:</strong></p>
-        <ul>
-          <li>Habilidad actual: Excel intermedio</li>
-          <li>Objetivo: Científico de datos</li>
-          <li>Nivel: Intermedio</li>
-        </ul>
-        <p><strong>Salida (resumen):</strong></p>
-        <ul>
-          <li>Listado de micro-skills (estadística, Python, SQL, visualización, ML básico, etc.).</li>
-          <li>Roadmap organizado por etapas progresivas.</li>
-          <li>Ejercicios prácticos y acciones recomendadas.</li>
-          <li>Explicación de la brecha entre punto actual y objetivo final.</li>
-        </ul>
-      </div>
-    </section>
+Respuesta:
 
-    <!-- ROADMAP -->
-    <section>
-      <h2>🔮 Roadmap de evolución del producto</h2>
-      <div class="grid grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">🧱</div>
-            <div class="card-title">Versión 2 – Profundización</div>
-          </div>
-          <ul>
-            <li>Historial de roadmaps generados por usuario.</li>
-            <li>Dashboard personal de progreso.</li>
-            <li>Soporte para múltiples objetivos simultáneos.</li>
-          </ul>
-        </div>
+roadmap, micro-skills, ejercicios, recomendaciones
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">📊</div>
-            <div class="card-title">Versión 3 – Integraciones</div>
-          </div>
-          <ul>
-            <li>Exportación a PDF, Notion, Trello y Google Calendar.</li>
-            <li>Recordatorios y checkpoints de avance.</li>
-          </ul>
-        </div>
+🔮 Visión futura (post-MVP)
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">📚</div>
-            <div class="card-title">Versión 4 – Contenido vivo</div>
-          </div>
-          <ul>
-            <li>Recomendaciones reales de videos, cursos y lecturas.</li>
-            <li>Integración con APIs de plataformas educativas.</li>
-          </ul>
-        </div>
+Dashboard con historial de rutas generadas
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">💼</div>
-            <div class="card-title">Versión 5 – SkillSynth Careers</div>
-          </div>
-          <ul>
-            <li>Rutas completas para profesiones específicas.</li>
-            <li>Orientación hacia empleabilidad y oportunidades reales.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+Exportar roadmap (PDF / Notion / Google Calendar)
 
-    <!-- AUTOR -->
-    <section>
-      <h2>🧙 Autor</h2>
-      <p>
-        <strong>Luigi Silveyra</strong><br />
-        Creador de SkillSynth – La Calera, Córdoba, Argentina.
-      </p>
-      <p class="muted">
-        Proyecto orientado a unir <span class="accent">aprendizaje</span>, <span class="accent">creatividad</span> y
-        <span class="accent">tecnología</span> para diseñar carreras a medida.
-      </p>
-    </section>
+Integración con API de YouTube para recursos reales
 
-    <!-- LICENCIA -->
-    <section>
-      <h2>📄 Licencia</h2>
-      <p>
-        Este proyecto está licenciado bajo la licencia <strong>MIT</strong>.  
-        Es libre de usar, modificar y distribuir, siempre que se mantenga el aviso de licencia correspondiente.
-      </p>
-    </section>
+Sistema de niveles gamificado
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="tagline">
-        SkillSynth — Componé tu próxima versión profesional.  
-      </div>
-      <div class="muted">
-        Hecho con 🧠 + 🎶 + ☕ desde Argentina.
-      </div>
-    </footer>
-  </main>
-</body>
-</html>
+Sugerencias automáticas según mercado laboral
+
+Match entre habilidades + posibles profesiones futuras
+
+Versión móvil (React Native)
+
+👨‍💻 Autor
+
+Luigi Silveyra
+Creador de SkillSynth
+Argentina, 2025
+
+📄 Licencia
+
+MIT License – libre uso, modificación y distribución.
